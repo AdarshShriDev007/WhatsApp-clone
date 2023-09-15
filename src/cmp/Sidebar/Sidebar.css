@@ -77,6 +77,11 @@
     cursor: pointer;
 }
 
+.sidebar-room .MuiAvatar-root{
+    width: 35px;
+    height: 35px;
+}
+
 .sidebar-room-info{
     margin-left: 5px;
 }

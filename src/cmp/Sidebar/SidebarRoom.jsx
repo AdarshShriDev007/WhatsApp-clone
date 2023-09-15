@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, IconButton } from "@mui/material";
-import { Add, AddCircle } from '@mui/icons-material';
+import { Add, AddCircle, AddComment, AddCommentOutlined, AddCommentRounded, AddCommentTwoTone } from '@mui/icons-material';
 
 function SidebarRoom({addNewChat}) {
 
@@ -25,7 +25,7 @@ function SidebarRoom({addNewChat}) {
             <div className='add-chat'>
                 <h4>Add New Chat</h4>
                 <IconButton>
-                    <AddCircle />
+                    <AddComment />
                 </IconButton>
             </div>
         </div>)

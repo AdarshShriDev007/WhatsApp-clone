@@ -1,4 +1,5 @@
 import './App.css';
+import ChatBox from './cmp/ChatBox/ChatBox';
 import Sidebar from './cmp/Sidebar/Sidebar';
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
       <div className='App'>
          <div className='App-grid'>
             <Sidebar />
+            <ChatBox />
          </div>
       </div>
     </>
