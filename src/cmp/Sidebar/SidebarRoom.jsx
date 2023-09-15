@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, IconButton } from "@mui/material";
 import { Add, AddCircle } from '@mui/icons-material';
 
 function SidebarRoom({addNewChat}) {
+
+    const [avatar,setAvatar] = useState("");
+
+    useEffect(()=>{
+       setAvatar(Math.floor(Math.random() * 5000));    
+    },[]);
 
   return (
     <>
         {
             !addNewChat ? (<div className='sidebar-room'>
             <IconButton>
-                <Avatar />
+                <Avatar src={`https://avatars.dicebear.com/api/avataaars/${avatar}.svg`} />
             </IconButton>
             <div className='sidebar-room-info'>
                 <h4>Coders</h4>
