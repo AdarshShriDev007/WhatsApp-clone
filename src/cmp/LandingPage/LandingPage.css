@@ -1,0 +1,13 @@
+.landingPage{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0.65;
+    background-color: #F8F9FB;
+}
+
+.landingPage img{
+    width: 100%;
+}
+
+

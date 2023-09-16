@@ -6,6 +6,7 @@ import {
     useParams
 } from "react-router-dom";
 import { db, collection, addDoc, doc, onSnapshot, query, orderBy } from "../../firebase";
+import { useUserContext } from "../../contextApi/User";
 
 function ChatBox() {
 
@@ -13,9 +14,14 @@ function ChatBox() {
     const [input,setInput] = useState("");
     const [roomName, setRoomName] = useState("");
     const [messages,setMessages] = useState([]);
-    const [lastSeen,setLastSeen] = useState("");
+    const [lastSeen,setLastSeen] = useState([]);
+    const userInfo = useUserContext();
+    const user = userInfo.user.userData;
+    const [avatar,setAvatar] = useState("");
 
     useEffect(()=>{
+        setAvatar(Math.floor(Math.random() * 5000));
+
         if(roomId)
         {
             onSnapshot(doc(db, "rooms", roomId),(snapshot)=>{
@@ -49,7 +55,8 @@ function ChatBox() {
         {
             try{
                 await addDoc(collection(db, "rooms", roomId, "messages"),{
-                    name : "Adarsh Kumar",
+                    name : user.displayName,
+                    email : user.email,
                     message : input,
                     timestamp : new Date()
                 });
@@ -66,13 +73,13 @@ function ChatBox() {
     const MessageBox = ({data})=>{
         return (
             <>
-                <div className='chatbox-message-box chat-sender'>
+                <div className={`chatbox-message-box ${user.email === data.email && "chat-sender"}`}>
                     <h4>{data.name}</h4>
                     <div className='chatbox-message'>
                         <span>{data.message}</span>
                         <span>
                             {
-                                lastSeen && new Date(data.timestamp?.seconds*1000).toLocaleTimeString()
+                                new Date(data.timestamp?.seconds*1000).toLocaleTimeString()
                             }
                         </span>
                     </div>  
@@ -86,13 +93,13 @@ function ChatBox() {
         <div className='chatbox-header'>
             <div className='chatbox-header-left'>
                 <IconButton>
-                    <Avatar />
+                    <Avatar src={`https://avatars.dicebear.com/api/avataaars/${avatar}.svg`} />
                 </IconButton>
                 <div className='chatbox-header-left-info'>
-                    <h4>{roomName}</h4>
+                    <h4>{roomName ? roomName : "Room Name"}</h4>
                     <span>
                         {
-                            new Date(lastSeen[0]?.timestamp?.seconds*1000).toLocaleTimeString()
+                            lastSeen && new Date(lastSeen[0]?.timestamp?.seconds*1000).toLocaleTimeString()
                         }
                     </span>
                 </div>
@@ -112,7 +119,7 @@ function ChatBox() {
 
         <div className='chatbox-body'>
             {
-                messages.map(({id,data})=>{
+                messages && messages.map(({id,data})=>{
                     return <MessageBox key={id} data={data} />
                 })
             }

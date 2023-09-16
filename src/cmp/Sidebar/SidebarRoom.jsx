@@ -12,20 +12,19 @@ function SidebarRoom({id,roomName,addNewChat}) {
     useEffect(()=>{
        setAvatar(Math.floor(Math.random() * 5000));
 
-       try{
-        const queryLastMessage = query(collection(db, "rooms", id, "messages"), orderBy("timestamp","desc"));
-        onSnapshot(queryLastMessage,(snapshot)=>{
-             setLastMessage(snapshot.docs.map(doc=>doc.data()));
-        });
-       }
-       catch(error){
-        console.error(error);
-       }
-      
+        if(id){
+            try{
+                const queryLastMessage = query(collection(db, "rooms", id, "messages"), orderBy("timestamp","desc"));
+                onSnapshot(queryLastMessage,(snapshot)=>{
+                     setLastMessage(snapshot.docs.map(doc=>doc.data()));
+                });
+               }
+               catch(error){
+                console.error(error);
+               }
+        }
        
     },[id]);
-
-    console.log(lastMessage[0]?.message);
 
     const addRoom = async ()=>{
         const room = prompt("Enter your room name.");
@@ -54,14 +53,14 @@ function SidebarRoom({id,roomName,addNewChat}) {
                 <h4>{roomName}</h4>
                 <span>
                     {
-                        lastMessage[0]?.message
+                        lastMessage && lastMessage[0]?.message
                     }
                 </span>
             </div>
         </div>
         </Link>) : (<div className='add-new-chat'>
                 <div className='add-chat' onClick={addRoom}>
-                    <h4>Add New Chat</h4>
+                    <h4>ADD NEW CHAT</h4>
                     <IconButton>
                         <AddComment />
                     </IconButton>
