@@ -1,11 +1,27 @@
 import { Chat, DonutLarge, MoreVert, Search } from '@mui/icons-material';
 import { Avatar, IconButton } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "./Sidebar.css";
 import SidebarRoom from './SidebarRoom';
+import { db,collection, query, orderBy, onSnapshot } from "../../firebase";
 
 function Sidebar() {
-  return (
+
+const [rooms,setRooms] = useState([]);
+
+useEffect(()=>{
+    const queryrooms = query(collection(db, "rooms"), orderBy("timestamp", "desc"));
+    onSnapshot(queryrooms,(snapshot)=>{
+       const snap = snapshot.docs.map((doc)=>({
+            id : doc.id,
+            data : doc.data()
+        }));
+        setRooms(snap);
+    });
+},[]);
+
+
+return (
     <div className='sidebar'>
         <div className='sidebar-header'>
             <div className='sidebar-header-left'>
@@ -37,14 +53,12 @@ function Sidebar() {
 
         <div className='sidebar-rooms'>
             <SidebarRoom addNewChat />
-            <SidebarRoom />
-            <SidebarRoom />
-            <SidebarRoom />
-            <SidebarRoom />
-            <SidebarRoom />
-            <SidebarRoom />
-            <SidebarRoom />
-            <SidebarRoom />
+            {
+                rooms && rooms.map(({id,data})=>{
+                    return <SidebarRoom key={id} id={id} roomName={data.name} />
+                })
+            }
+            
         </div>
     </div>
   )

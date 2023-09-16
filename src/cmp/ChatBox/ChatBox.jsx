@@ -2,8 +2,14 @@ import { AttachFile, EmojiEmotions, MicNoneOutlined, MoreVert, Search } from '@m
 import { Avatar, IconButton } from '@mui/material';
 import React from 'react';
 import "./ChatBox.css";
+import {
+    useParams
+} from "react-router-dom";
 
 function ChatBox() {
+
+    const {roomId} = useParams();
+
   return (
     <div className='chatbox'>
         <div className='chatbox-header'>

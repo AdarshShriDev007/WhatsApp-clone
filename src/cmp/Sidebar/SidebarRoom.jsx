@@ -1,35 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, IconButton } from "@mui/material";
-import { Add, AddCircle, AddComment, AddCommentOutlined, AddCommentRounded, AddCommentTwoTone } from '@mui/icons-material';
+import {AddComment} from '@mui/icons-material';
+import { db, collection, addDoc } from "../../firebase";
+import { Link } from "react-router-dom";
 
-function SidebarRoom({addNewChat}) {
+function SidebarRoom({id,roomName,addNewChat}) {
 
     const [avatar,setAvatar] = useState("");
 
     useEffect(()=>{
-       setAvatar(Math.floor(Math.random() * 5000));    
+       setAvatar(Math.floor(Math.random() * 5000));   
     },[]);
+
+    const addRoom = async ()=>{
+        const room = prompt("Enter your room name.");
+        if(room)
+        {
+           try{
+                await addDoc(collection(db, "rooms"),{
+                name : room,
+                timestamp : new Date()
+            });
+           }
+           catch(error){
+                console.error(error);
+           }
+        }
+    }
 
   return (
     <>
-        {
-            !addNewChat ? (<div className='sidebar-room'>
+        {!addNewChat ? (<Link to={`/room/${id}`} style={{color:"black",textDecoration:"none"}}>
+            <div className='sidebar-room'>
             <IconButton>
                 <Avatar src={`https://avatars.dicebear.com/api/avataaars/${avatar}.svg`} />
             </IconButton>
             <div className='sidebar-room-info'>
-                <h4>Coders</h4>
+                <h4>{roomName}</h4>
                 <span>Last message...</span>
             </div>
-        </div>) : (<div className='add-new-chat'>
-            <div className='add-chat'>
-                <h4>Add New Chat</h4>
-                <IconButton>
-                    <AddComment />
-                </IconButton>
-            </div>
-        </div>)
-        }
+        </div>
+        </Link>) : (<div className='add-new-chat'>
+                <div className='add-chat' onClick={addRoom}>
+                    <h4>Add New Chat</h4>
+                    <IconButton>
+                        <AddComment />
+                    </IconButton>
+                </div>
+            </div>)}
     </>
   )
 }
