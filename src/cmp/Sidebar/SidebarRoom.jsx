@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, IconButton } from "@mui/material";
 import {AddComment} from '@mui/icons-material';
-import { db, collection, addDoc } from "../../firebase";
+import { db, collection, addDoc, orderBy, query, onSnapshot } from "../../firebase";
 import { Link } from "react-router-dom";
 
 function SidebarRoom({id,roomName,addNewChat}) {
 
     const [avatar,setAvatar] = useState("");
+    const [lastMessage,setLastMessage] = useState([]);
 
     useEffect(()=>{
-       setAvatar(Math.floor(Math.random() * 5000));   
-    },[]);
+       setAvatar(Math.floor(Math.random() * 5000));
+
+       try{
+        const queryLastMessage = query(collection(db, "rooms", id, "messages"), orderBy("timestamp","desc"));
+        onSnapshot(queryLastMessage,(snapshot)=>{
+             setLastMessage(snapshot.docs.map(doc=>doc.data()));
+        });
+       }
+       catch(error){
+        console.error(error);
+       }
+      
+       
+    },[id]);
+
+    console.log(lastMessage[0]?.message);
 
     const addRoom = async ()=>{
         const room = prompt("Enter your room name.");
@@ -37,7 +52,11 @@ function SidebarRoom({id,roomName,addNewChat}) {
             </IconButton>
             <div className='sidebar-room-info'>
                 <h4>{roomName}</h4>
-                <span>Last message...</span>
+                <span>
+                    {
+                        lastMessage[0]?.message
+                    }
+                </span>
             </div>
         </div>
         </Link>) : (<div className='add-new-chat'>

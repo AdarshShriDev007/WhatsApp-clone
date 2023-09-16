@@ -13,6 +13,7 @@ function ChatBox() {
     const [input,setInput] = useState("");
     const [roomName, setRoomName] = useState("");
     const [messages,setMessages] = useState([]);
+    const [lastSeen,setLastSeen] = useState("");
 
     useEffect(()=>{
         if(roomId)
@@ -27,13 +28,18 @@ function ChatBox() {
                     id : doc.id,
                     data : doc.data()
                 }));
-
                 setMessages(snap);
             })
+
+
+            const queryTime = query(collection(db, "rooms", roomId, "messages"), orderBy("timestamp", "desc"));
+            onSnapshot(queryTime,(snapshot)=>{
+                const snapTime = snapshot.docs.map(doc=>doc.data());
+                setLastSeen(snapTime);
+            });
         }
     },[roomId]);
 
-    console.log(messages);
 
 
 
@@ -66,7 +72,7 @@ function ChatBox() {
                         <span>{data.message}</span>
                         <span>
                             {
-                                new Date(data.timestamp?.seconds*1000).toLocaleTimeString()
+                                lastSeen && new Date(data.timestamp?.seconds*1000).toLocaleTimeString()
                             }
                         </span>
                     </div>  
@@ -84,7 +90,11 @@ function ChatBox() {
                 </IconButton>
                 <div className='chatbox-header-left-info'>
                     <h4>{roomName}</h4>
-                    <span>Last Seen...</span>
+                    <span>
+                        {
+                            new Date(lastSeen[0]?.timestamp?.seconds*1000).toLocaleTimeString()
+                        }
+                    </span>
                 </div>
             </div>
             <div className='chatbox-header-right'>
