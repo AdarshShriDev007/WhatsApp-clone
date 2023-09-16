@@ -5,7 +5,8 @@ import {
     query,
     orderBy,
     onSnapshot,
-    addDoc
+    addDoc,
+    doc
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -26,5 +27,6 @@ export {
     query,
     orderBy,
     onSnapshot,
-    addDoc
+    addDoc,
+    doc
 }
